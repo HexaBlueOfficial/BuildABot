@@ -21,7 +21,7 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_bot_help(self, mapping):
         ctx = self.context
         embed = discord.Embed(title="BuildABot's Commands", color=int(self.embed["color"], 16), description="The following is a list of commands for BuildABot.")
-        embed.set_author(name=self.embed["color"], icon_url=self.embed["icon"])
+        embed.set_author(name=self.embed["author"] + "Help", icon_url=self.embed["icon"])
         embed.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
         bot = self.context.bot
         filtered = await self.filter_commands(bot.commands, sort=True)
@@ -36,14 +36,14 @@ class HelpCommand(commands.MinimalHelpCommand):
 
     async def send_command_help(self, command):
         embed = discord.Embed(title=f"{self.get_command_signature(command)} (from {command.cog_name})", description=command.help or 'No description', color=int(self.embed["color"], 16))
-        embed.set_author(name=self.embed["color"], icon_url=self.embed["icon"])
+        embed.set_author(name=self.embed["author"] + "Help", icon_url=self.embed["icon"])
         embed.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
         embed.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
         await self.context.send(embed=embed)
 
     async def send_group_help(self, group):
         embed = discord.Embed(color=int(self.embed["color"], 16))
-        embed.set_author(name=self.embed["color"], icon_url=self.embed["icon"])
+        embed.set_author(name=self.embed["author"] + "Help", icon_url=self.embed["icon"])
         embed.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
         embed.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
         self.command_formatter(embed, group)
@@ -52,7 +52,7 @@ class HelpCommand(commands.MinimalHelpCommand):
 
     async def send_cog_help(self, cog):
         embed = discord.Embed(title=f"{cog.qualified_name}", description=cog.description or 'No description', color=int(self.embed["color"], 16))
-        embed.set_author(name=self.embed["color"], icon_url=self.embed["icon"])
+        embed.set_author(name=self.embed["author"] + "Help", icon_url=self.embed["icon"])
         embed.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
         filtered = await self.filter_commands(cog.get_commands())
         if filtered:

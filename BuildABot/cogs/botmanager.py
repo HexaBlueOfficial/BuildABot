@@ -36,7 +36,7 @@ class BotManager(commands.Cog):
 
         await ctx.send("Please use the Slash Command version, over at `/create`.")
     
-    @cog_ext.cog_slash(name="create", description="Create a Bot!", options=[
+    @cog_ext.cog_slash(name="create", description="Bot Manager - Create a Bot!", options=[
         interactions.utils.manage_commands.create_option("name", "The bot's name.", 3, True),
         interactions.utils.manage_commands.create_option("avatar", "The bot's avatar.", 3, True, choices=[
             interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/wwio.jpg", "Hammer and Wrench"),
@@ -97,7 +97,7 @@ class BotManager(commands.Cog):
 
         await ctx.send("Please use the Slash Command version, over at `/edit`.")
     
-    @cog_ext.cog_slash(name="edit", description="Change your Bot's name or avatar!", options=[
+    @cog_ext.cog_slash(name="edit", description="Bot Manager - Change your Bot's name or avatar!", options=[
         interactions.utils.manage_commands.create_option("name", "The Bot's new name.", 3, False),
         interactions.utils.manage_commands.create_option("avatar", "The Bot's new avatar.", 3, False, choices=[
             interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/wwio.jpg", "Hammer and Wrench"),
@@ -171,7 +171,7 @@ class BotManager(commands.Cog):
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
         await ctx.send(embed=e)
     
-    @cog_ext.cog_slash(name="delete", description="Delete your Bot.")
+    @cog_ext.cog_slash(name="delete", description="Bot Manager - Delete your Bot.")
     @commands.has_permissions(manage_guild=True)
     async def _delete(self, ctx: interactions.SlashContext):
         await ctx.defer()

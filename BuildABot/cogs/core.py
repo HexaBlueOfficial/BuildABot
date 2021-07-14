@@ -59,7 +59,7 @@ class Core(commands.Cog):
         waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
         await waitfor.send("**Coming soon...**", hidden=True)
     
-    @cog_ext.cog_slash(name="info", description="Shows information about BuildABot.")
+    @cog_ext.cog_slash(name="info", description="Core - Shows information about BuildABot.")
     async def _info(self, ctx: interactions.SlashContext):
         luckyint = random.randint(1, 20)
 
