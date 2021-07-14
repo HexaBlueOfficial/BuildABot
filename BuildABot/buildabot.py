@@ -6,6 +6,7 @@ from discord.ext import commands
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("bab ", "BAB ", "Bab "), intents=discord.Intents.all())
 slash = interactions.SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True, override_type=True)
+bot.remove_command("help")
 
 tracemalloc.start()
 
@@ -37,7 +38,7 @@ async def on_slash_command_error(ctx: interactions.SlashContext, ex):
 
     raise ex
 
-extensions = ["cogs.botmanager", "cogs.core", "jishaku"]
+extensions = ["cogs.botmanager", "cogs.core", "cogs.help", "jishaku"]
 for extension in extensions:
     bot.load_extension(extension)
 
