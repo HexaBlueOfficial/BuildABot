@@ -12,7 +12,7 @@ class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.presence.start()
-        with open("./BuildABot/BuildABot/bab/assets/embed.json") as embedfile:
+        with open("./BuildABot/BuildABot/misc/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
     
     @tasks.loop(seconds=400.0)
@@ -38,7 +38,7 @@ class Core(commands.Cog):
 
         e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
         e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
-        e.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
+        e.set_thumbnail(url=self.embed["icon"])
         e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
         e.add_field(name="Versions", value=f"BuildABot: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
@@ -65,7 +65,7 @@ class Core(commands.Cog):
 
         e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
         e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
-        e.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
+        e.set_thumbnail(url=self.embed["icon"])
         e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
         e.add_field(name="Versions", value=f"BuildABot: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)

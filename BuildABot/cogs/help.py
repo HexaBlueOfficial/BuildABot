@@ -5,7 +5,7 @@ from discord.ext import commands
 class HelpCommand(commands.MinimalHelpCommand):
     def __init__(self):
         super().__init__(command_attrs={'hidden': True})
-        with open("./BuildABot/BuildABot/bab/assets/embed.json") as embedfile:
+        with open("./BuildABot/BuildABot/misc/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
 
     def get_command_signature(self, command):
