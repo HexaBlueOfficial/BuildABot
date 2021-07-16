@@ -5,11 +5,11 @@ from discord.ext import commands
 class HelpCommand(commands.MinimalHelpCommand):
     def __init__(self):
         super().__init__(command_attrs={'hidden': True})
-        with open("./BuildABot/BuildABot/assets/embed.json") as embedfile:
+        with open("./BuildABot/BuildABot/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
 
     def get_command_signature(self, command):
-        return '{0.clean_prefix}{1.qualified_name} {1.signature}'.format(self, command)
+        return '{0.clean_prefix}{1.qualified_name} {1.signature}'.format(self, command).rstrip(" ")
 
     def command_formatter(self, embed, command):
         embed.title = f"{self.get_command_signature(command)} (from {command.cog_name})"

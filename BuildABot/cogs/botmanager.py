@@ -19,7 +19,7 @@ class BotManager(commands.Cog):
             self.token = json.load(tokenfile)
         with open("./postgres.json") as postgresfile:
             self.postgres = json.load(postgresfile)
-        with open("./BuildABot/BuildABot/misc/assets/embed.json") as embedfile:
+        with open("./BuildABot/BuildABot/misc/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
     
     async def pgexecute(self, sql: str):
@@ -37,14 +37,15 @@ class BotManager(commands.Cog):
         await ctx.send("Please use the Slash Command version, over at `/create`.")
     
     @cog_ext.cog_slash(name="create", description="Bot Manager - Create a Bot!", options=[
-        interactions.utils.manage_commands.create_option("name", "The bot's name.", 3, True),
-        interactions.utils.manage_commands.create_option("avatar", "The bot's avatar.", 3, True, choices=[
-            interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/wwio.jpg", "Hammer and Wrench"),
+        interactions.utils.manage_commands.create_option("name", "The Bot's name.", 3, True),
+        interactions.utils.manage_commands.create_option("prefix", "The Bot's prefix (symbol to which the bot will respond to).", 3, True),
+        interactions.utils.manage_commands.create_option("avatar", "The Bot's avatar.", 3, True, choices=[
+            interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/n2o6.jpg", "Hammer and Wrench"),
             interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/605t.jpg", "Sky")
         ])
     ])
     @commands.has_permissions(manage_guild=True)
-    async def _create(self, ctx: interactions.SlashContext, name: str, avatar: str):
+    async def _create(self, ctx: interactions.SlashContext, name: str, prefix: str, avatar: str):
         await ctx.defer()
 
         q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")
@@ -56,7 +57,10 @@ class BotManager(commands.Cog):
                     async with session.post(f"https://discord.com/api/v9/applications/{appid}/bot", data={"username": name, "avatar": avatar}) as bot:
                         response2 = await bot.json()
                         token = response2["token"]
-                        await self.pgexecute(f"INSERT INTO bab(bots) VALUES ('{ctx.guild.id}\n{appid}\n{token}\nx')")
+                        if avatar == "https://this.is-for.me/i/n2o6.jpg":
+                            await self.pgexecute(f"INSERT INTO bab(bots) VALUES ('{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\nfffffe')")
+                        elif avatar == "https://this.is-for.me/i/605t.jpg":
+                            await self.pgexecute(f"INSERT INTO bab(bots) VALUES ('{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\n00a8ff')")
         
             e = discord.Embed(title="Bot Created Successfully", color=int(self.embed["color"], 16), description="Click the link below to add your Bot!")
             e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
@@ -100,7 +104,7 @@ class BotManager(commands.Cog):
     @cog_ext.cog_slash(name="edit", description="Bot Manager - Change your Bot's name or avatar!", options=[
         interactions.utils.manage_commands.create_option("name", "The Bot's new name.", 3, False),
         interactions.utils.manage_commands.create_option("avatar", "The Bot's new avatar.", 3, False, choices=[
-            interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/wwio.jpg", "Hammer and Wrench"),
+            interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/n2o6.jpg", "Hammer and Wrench"),
             interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/605t.jpg", "Sky")
         ])
     ])

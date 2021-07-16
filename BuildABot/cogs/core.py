@@ -12,7 +12,7 @@ class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.presence.start()
-        with open("./BuildABot/BuildABot/assets/embed.json") as embedfile:
+        with open("./BuildABot/BuildABot/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
     
     @tasks.loop(seconds=400.0)
@@ -39,8 +39,8 @@ class Core(commands.Cog):
         e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
         e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
         e.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
-        e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `e.help`.\nOther: `e.jishaku` (External Extension).", inline=False)
-        e.add_field(name="Versions", value=f"BuildABot: v0.0.1\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
+        e.add_field(name="Versions", value=f"BuildABot: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
@@ -66,8 +66,8 @@ class Core(commands.Cog):
         e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
         e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
         e.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
-        e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `e.help`.\nOther: `e.jishaku` (External Extension).", inline=False)
-        e.add_field(name="Versions", value=f"BuildABot: v0.0.1\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
+        e.add_field(name="Versions", value=f"BuildABot: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
@@ -86,7 +86,7 @@ class Core(commands.Cog):
         waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
         await waitfor.send("**Coming soon...**", hidden=True)
     
-    @commands.command(name="bab")
+    @commands.command(name="bab", hidden=True)
     async def bab(self, ctx: commands.Context):
         await ctx.send("bab bab bab bab bab bab bab bab bab bab bab bab")
 
