@@ -58,9 +58,9 @@ class BotManager(commands.Cog):
                         response2 = await bot.json()
                         token = response2["token"]
                         if avatar == "https://this.is-for.me/i/n2o6.jpg":
-                            await self.pgexecute(f"INSERT INTO bab(bots) VALUES ('{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\nfffffe')")
+                            await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\nfffffe")
                         elif avatar == "https://this.is-for.me/i/605t.jpg":
-                            await self.pgexecute(f"INSERT INTO bab(bots) VALUES ('{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\n00a8ff')")
+                            await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\n00a8ff")
         
             e = discord.Embed(title="Bot Created Successfully", color=int(self.embed["color"], 16), description="Click the link below to add your Bot!")
             e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
