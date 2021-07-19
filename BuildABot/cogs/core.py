@@ -67,7 +67,7 @@ class Core(commands.Cog):
         e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
         e.set_thumbnail(url=self.embed["icon"])
         e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
-        e.add_field(name="Versions", value=f"BuildABot: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="Versions", value=f"BuildABot: v0.0.4\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
@@ -83,7 +83,7 @@ class Core(commands.Cog):
             await ctx.author.send("Hey!")
             await ctx.author.send("You should try running `bab bab`!")
 
-        waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
+        waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
         await waitfor.send("**Coming soon...**", hidden=True)
     
     @commands.command(name="bab", hidden=True)
