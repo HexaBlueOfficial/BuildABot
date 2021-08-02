@@ -18,7 +18,7 @@ class Core(commands.Cog):
     
     @tasks.loop(seconds=400.0)
     async def presence(self):
-        presences = {"playing": ["with bots", "with API Requests"], "watching": ["you make your own bot", "bot makers"]}
+        presences = {"playing": ["with Bots", "with API Requests"], "watching": ["you make your own Bot", "Bot makers"]}
         playorwatch = random.randint(1, 2)
         if playorwatch == 1:
             presencetouse = random.randint(0, 1)
@@ -31,14 +31,29 @@ class Core(commands.Cog):
     async def before_presence(self):
         await self.bot.wait_until_ready()
     
+    @commands.Cog.listener()
+    async def on_ready(self):
+        q: list = await self.pgselect(f"SELECT bots FROM bab")
+        for bot in q:
+            bot = bot.splitlines()
+
+            botobj = commands.Bot(command_prefix=commands.when_mentioned_or(bot[3]), intents=discord.Intents.all())
+            botobj.remove_command("help")
+
+            extensions = ["..features.core", "..features.fun", "..features.help", "..features.utility"]
+            for extension in extensions:
+                botobj.load_extension(extension)
+            
+            await botobj.login(bot[2])
+    
     async def info(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
         luckyint = random.randint(1, 20)
 
         e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
-        e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
+        e.set_author(name=self.embed["author"] + "Core", icon_url=self.embed["icon"])
         e.set_thumbnail(url=self.embed["icon"])
         e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
-        e.add_field(name="Versions", value=f"BuildABot: v0.0.5\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="Versions", value=f"BuildABot: v0.0.6\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
         e.set_image(url=self.embed["banner"])
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])

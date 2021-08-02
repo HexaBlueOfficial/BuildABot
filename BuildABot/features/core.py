@@ -44,7 +44,7 @@ class Core(commands.Cog):
         e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
         e.set_thumbnail(url=bot[6])
         e.add_field(name="BuildABot Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.", inline=False)
-        e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.5\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.6\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Created with:** BuildABot", inline=False)
         e.set_image(url=self.embed["banner"])
         e.set_footer(name=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
@@ -70,12 +70,12 @@ class Core(commands.Cog):
 
         ping = round(self.bot.latency * 1000, 1)
 
-        e = discord.Embed(title="Ping Latency", color=int(bot[7], 16), description=f"My Ping Latency is {ping}.")
+        e = discord.Embed(title="Ping Latency", color=int(bot[7], 16), description=f"My Ping Latency is {ping}ms.")
         e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
         e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
-    @commands.command(name="ping")
+    @commands.command(name="ping", aliases=["latency", "lat"])
     async def dpyping(self, ctx: commands.Context):
         """Gets the Bot's Ping Latency."""
 
@@ -96,7 +96,7 @@ class Core(commands.Cog):
         
         e = discord.Embed(title="Uptime", color=int(bot[7], 16), description=f"The bot has been online for:\n{days} days, {hours} hours, {minutes} minutes and {seconds} seconds.")
         e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
-        e.add_field(name="Last Restart", value="The bot was last restarted on {} UTC".format(self.bot.launch_time.strftime("%A, %d %B %Y at %H:%M")))
+        e.add_field(name="Last Restart", value="The Bot was last restarted on {} UTC".format(self.bot.launch_time.strftime("%A, %d %B %Y at %H:%M")))
         e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     

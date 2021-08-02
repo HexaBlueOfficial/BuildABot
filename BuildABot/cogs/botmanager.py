@@ -12,7 +12,7 @@ class BothChangesNoneType(Exception):
         super().__init__("Both name and avatar arguments are NoneType.")
 
 class BotManager(commands.Cog):
-    """Bot managing Commands."""
+    """Bot-managing Commands."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -54,29 +54,42 @@ class BotManager(commands.Cog):
 
         q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")
         if q is None:
-            async with aiohttp.ClientSession(headers={"Authorization": self.token["bab"]["builder"]}) as session:
-                async with session.post("https://discord.com/api/v9/applications", data={"name": name}) as application:
+            async with aiohttp.ClientSession(headers={"Authorization": self.token["bab"]["builder"]}) as session1:
+                async with session1.post("https://discord.com/api/v9/applications", data={"name": name, "team_id": "868533132880658483"}) as application:
                     response1 = await application.json()
                     appid = response1["id"]
-                    async with session.post(f"https://discord.com/api/v9/applications/{appid}/bot", data={"username": name, "avatar": avatar}) as bot:
-                        response2 = await bot.json()
-                        token = response2["token"]
-                        if avatar == "https://this.is-for.me/i/n2o6.jpg":
-                            await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\nfffffe")
-                        elif avatar == "https://this.is-for.me/i/605t.jpg":
-                            await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\n00a8ff")
+                    await session1.patch(f"https://discord.com/api/v9/applications/{appid}", data={"description": f"{name} is a **Bot** created with **BuildABot**!\nCheck **BuildABot** out at https://buildabot.tk/"})
+                async with session1.post(f"https://discord.com/api/v9/applications/{appid}/bot") as bot:
+                    response2 = await bot.json()
+                    token = response2["token"]
+
+                    if avatar == "https://this.is-for.me/i/n2o6.jpg":
+                        await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\nfffffe")
+                    elif avatar == "https://this.is-for.me/i/605t.jpg":
+                        await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\ncore:help\n{name}\n{avatar}\n00a8ff")
+            
+            async with aiohttp.ClientSession(headers={"Authorization": f"{token}"}) as session2:
+                await session2.patch("https://discord.com/api/v9/users/@me", data={"avatar": avatar})
+            
+            botobj = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), intents=discord.Intents.all())
+            botobj.remove_command("help")
+
+            extensions = ["..features.core", "..features.fun", "..features.help", "..features.utility"]
+            for extension in extensions:
+                botobj.load_extension(extension)
+            
+            await botobj.login(token)
         
             e = discord.Embed(title="Bot Created Successfully", color=int(self.embed["color"], 16), description="Click the link below to add your Bot!")
             e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
             e.add_field(name="Invite", value=f"Click [here](https://discord.com/api/oauth2/authorize?client_id={appid}&permissions=8&scope=bot%20applications.commands) to invite your Bot!")
             e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
-            components = [
+            create = await ctx.send(embed=e, components=[
                 interactions.utils.manage_components.create_actionrow(
                     interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blurple, "Get Bot Info", None, "botinfo1")
                 )
-            ]
-            create = await ctx.send(embed=e, components=components)
+            ])
 
             waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, create, "botinfo1")
 
