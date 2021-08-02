@@ -44,7 +44,7 @@ class Core(commands.Cog):
         e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
         e.set_thumbnail(url=bot[6])
         e.add_field(name="BuildABot Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.", inline=False)
-        e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.4\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.5\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Created with:** BuildABot", inline=False)
         e.set_image(url=self.embed["banner"])
         e.set_footer(name=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
