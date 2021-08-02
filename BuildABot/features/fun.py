@@ -6,6 +6,7 @@ import aiohttp
 import discord_slash as interactions
 import random
 import asyncio
+from ..misc.bots.extracode import supermarket
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -26,6 +27,8 @@ class Fun(commands.Cog):
             self.hugg = json.load(hugfile)
         with open("./BuildABot/BuildABot/misc/bots/lines/kill.json") as killfile:
             self.killl = json.load(killfile)
+        with open("./BuildABot/BuildABot/misc/bots/lines/supermarket.json") as marketfile:
+            self.supermarkett = json.load(marketfile)
     
     async def pgselect(self, query: str):
         db: asyncpg.Connection = await asyncpg.connect(self.postgres["buildabot"])
@@ -49,9 +52,9 @@ class Fun(commands.Cog):
                 catpic = cat[0]["url"]
         
         e = discord.Embed(title="Random Cat (from TheCatAPI by Aden)", color=int(bot[7], 16), description="Check out TheCatAPI [here](https://thecatapi.com)!")
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         e.set_image(url=catpic)
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
 
     @commands.command(name="cat")
@@ -61,7 +64,7 @@ class Fun(commands.Cog):
         await ctx.trigger_typing()
         await self.cat(ctx)
     
-    @cog_ext.cog_slash(name="cat", description="Shows a random image of a cat.")
+    @cog_ext.cog_slash(name="cat", description="Fun - Shows a random image of a cat.")
     async def slashcat(self, ctx: interactions.SlashContext):
         await self.cat(ctx)
     
@@ -75,9 +78,9 @@ class Fun(commands.Cog):
                 dogpic = dog[0]["url"]
         
         e = discord.Embed(title="Random Dog (from TheDogAPI by Aden)", color=int(bot[7], 16), description="Check out TheDogAPI [here](https://thedogapi.com)!")
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         e.set_image(url=dogpic)
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
     @commands.command(name="dog")
@@ -87,7 +90,7 @@ class Fun(commands.Cog):
         await ctx.trigger_typing()
         await self.dog(ctx)
     
-    @cog_ext.cog_slash(name="dog", description="Shows a random image of a dog.")
+    @cog_ext.cog_slash(name="dog", description="Fun - Shows a random image of a dog.")
     async def slashdog(self, ctx: interactions.SlashContext):
         await self.dog(ctx)
     
@@ -101,9 +104,9 @@ class Fun(commands.Cog):
                 foxpic = fox["image"]
         
         e = discord.Embed(title="Random Fox (from Random Fox by xinitrc)", color=int(bot[7], 16), description="Check out Random Fox [here](https://randomfox.ca)!")
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         e.set_image(url=foxpic)
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
     @commands.command(name="fox")
@@ -113,7 +116,7 @@ class Fun(commands.Cog):
         await ctx.trigger_typing()
         await self.fox(ctx)
     
-    @cog_ext.cog_slash(name="fox", description="Shows a random image of a fox.")
+    @cog_ext.cog_slash(name="fox", description="Fun - Shows a random image of a fox.")
     async def slashfox(self, ctx: interactions.SlashContext):
         await self.fox(ctx)
     
@@ -123,7 +126,7 @@ class Fun(commands.Cog):
 
         await ctx.send("Please use the Slash Command version, over at `/say`.")
     
-    @cog_ext.cog_slash(name="say", description="The Bot will say what you tell it to.", options=[
+    @cog_ext.cog_slash(name="say", description="Fun - The Bot will say what you tell it to.", options=[
         interactions.utils.manage_commands.create_option("message", "What you want the Bot to say.", 3, True),
         interactions.utils.manage_commands.create_option("anonymous", "Whether you want the message author to be anonymous or not.", 5, False),
         interactions.utils.manage_commands.create_option("uwu", "Wud you wike youw message to wook wike a fuwwy wwote it?", 5, False),
@@ -158,10 +161,10 @@ class Fun(commands.Cog):
         ballline = self.eightballl[str(balllineint)]
 
         e = discord.Embed(title="Magic 8 Ball", color=int(bot[7], 16))
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         e.add_field(name="Your Question", value=f"{question}", inline=False)
         e.add_field(name="The 8 Ball's Answer", value=f"{ballline}", inline=False)
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
     @commands.command(name="8ball")
@@ -170,7 +173,7 @@ class Fun(commands.Cog):
 
         await self.eightball(ctx, question)
     
-    @cog_ext.cog_slash(name="8ball", description="Seek an answer from the Magic 8 Ball.", options=[
+    @cog_ext.cog_slash(name="8ball", description="Fun - Seek an answer from the Magic 8 Ball.", options=[
         interactions.utils.manage_commands.create_option("question", "Your question for the Magic 8 Ball.", 3, True)
     ])
     async def slash8ball(self, ctx: interactions.SlashContext, question: str):
@@ -229,8 +232,8 @@ class Fun(commands.Cog):
                 gayline = line()
             
         e = discord.Embed(title="Gay Percentage", color=int(bot[7], 16), description=f"{gayline}")
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
     @commands.command(name="gaypercent")
@@ -239,7 +242,7 @@ class Fun(commands.Cog):
 
         await self.gaypercent(ctx, thing)
     
-    @cog_ext.cog_slash(name="gaypercent", description="Wanna find out how gay something is? This command is for you.", options=[
+    @cog_ext.cog_slash(name="gaypercent", description="Fun - Wanna find out how gay something is? This command is for you.", options=[
         interactions.utils.manage_commands.create_option("thing", "What you want to find the gayness of.", 3, False)
     ])
     async def slashgay(self, ctx: interactions.SlashContext, thing: str=None):
@@ -254,10 +257,10 @@ class Fun(commands.Cog):
         hugline = halfpoint.replace("member", member.mention)
         
         e = discord.Embed(title="Hug", color=int(bot[7], 16), description=f"{hugline}")
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         if message is not None:
             e.add_field(name=f"{ctx.author.name} included a message! They said...", value=f"{message}", inline=False)
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
     @commands.command(name="hug")
@@ -267,7 +270,7 @@ class Fun(commands.Cog):
         await self.hug(ctx, member, message)
         await ctx.message.delete()
     
-    @cog_ext.cog_slash(name="hug", description="Hugs the Member you want.", options=[
+    @cog_ext.cog_slash(name="hug", description="Fun - Hugs the Member you want.", options=[
         interactions.utils.manage_commands.create_option("member", "The Member to hug.", 6, True),
         interactions.utils.manage_commands.create_option("message", "A message to add.", 3, False)
     ])
@@ -283,8 +286,8 @@ class Fun(commands.Cog):
         killline = halfpoint.replace("member", member.mention)
         
         e = discord.Embed(title="Murder", color=int(bot[7], 16), description=f"{killline}")
-        e.set_author(name="{}".format(self.embed["author"] + "Fun"), icon_url=bot[6])
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
     
     @commands.command(name="kill")
@@ -293,11 +296,54 @@ class Fun(commands.Cog):
 
         await self.kill(ctx, member)
     
-    @cog_ext.cog_slash(name="kill", description="Kills the Member you want.", options=[
+    @cog_ext.cog_slash(name="kill", description="Fun - Kills the Member you want.", options=[
         interactions.utils.manage_commands.create_option("member", "The Member to kill.", 6, True)
     ])
     async def slashkill(self, ctx: interactions.SlashContext, member: discord.Member):
         await self.kill(ctx, member)
+    
+    async def supermarket(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
+        supermarketint = random.randint(0, 2)
+        supermarkett = self.supermarkett["products"][str(supermarketint)]
+
+        buttons = []
+        for product in supermarkett:
+            product = product.splitlines()
+            buttons.append(
+                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blurple, product[1], None, product[2])
+            )
+        components = [interactions.utils.manage_components.create_actionrow(*buttons)]
+
+        hintint = 0 # random.randint(0, 4)
+        hint = self.supermarkett["hints"][str(hintint)]
+
+        e = discord.Embed(title="Welcome to the Supermarket!", color=int(bot[7], 16), description="Pick a code!\nWill you be lucky enough?")
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
+        supermarketmsg = await ctx.send(f"Hint: {hint}", embed=e, components=components)
+
+        ids = ["M.dev*command+cert", "R.hug", "R.kill", "DB.user@updates", "M.user+amogass", "M.user+ff", "M.user+whensus", "M.user+amogus", "M.dev*roast+cert", "DB.bot*1mo@plus"]
+        waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, supermarketmsg, ids)
+        if waitfor.author.id == ctx.author.id:
+            if waitfor.custom_id.startswith("M."):
+                await supermarket.message(ctx, self.bot, waitfor.custom_id.lstrip("M."))
+            elif waitfor.custom_id.startswith("R."):
+                await supermarket.run(ctx, bot, waitfor.custom_id.lstrip("R."))
+            elif waitfor.custom_id.startswith("DB."):
+                await supermarket.database(ctx, bot, waitfor.custom_id.lstrip("DB."))
+    
+    @commands.command(name="supermarket")
+    async def dpysupermarket(self, ctx: commands.Context):
+        """Welcome to the Supermarket! Pick a product!"""
+
+        await self.supermarket(ctx)
+    
+    @cog_ext.cog_slash(name="supermarket", description="Fun - Welcome to the Supermarket! Pick a product!")
+    async def slashsupermarket(self, ctx: interactions.SlashContext):
+        await self.supermarket(ctx)
     
     @commands.command(name="poll")
     async def dpypoll(self, ctx: commands.Context):
@@ -305,7 +351,7 @@ class Fun(commands.Cog):
 
         await ctx.send("Please use the Slash Command version, over at `/poll`.")
     
-    @cog_ext.cog_slash(name="poll", description="Create a poll. Currently only supports two options.", options=[
+    @cog_ext.cog_slash(name="poll", description="Fun - Create a poll. Currently only supports two options.", options=[
         interactions.utils.manage_commands.create_option("name", "The poll's name.", 3, True),
         interactions.utils.manage_commands.create_option("option1", "The first option to vote on.", 3, True),
         interactions.utils.manage_commands.create_option("option2", "The second option to vote on.", 3, True)
@@ -321,7 +367,7 @@ class Fun(commands.Cog):
         e.set_author(name=self.embed["author"], icon_url=bot[6])
         e.add_field(name=option1, value=f"{vote1} | 0%")
         e.add_field(name=option2, value=f"{vote2} | 0%")
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         poll = await ctx.send(embed=e, components=[
             interactions.utils.manage_components.create_actionrow(
                 interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "1st Option", None, "opt1"),
@@ -330,7 +376,7 @@ class Fun(commands.Cog):
         ])
 
         while 0 == 0:
-            waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, poll, ["opt1", "opt2"])
+            waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, poll, ["opt1", "opt2"])
             e.clear_fields()
             if waitfor.custom_id == "opt1":
                 vote1 += 1
@@ -352,43 +398,48 @@ class Fun(commands.Cog):
 
         await ctx.send("Please use the Slash Command version, over at `/calculator`.")
     
-    @cog_ext.cog_slash(name="calculator", description="Calculate.")
+    @cog_ext.cog_slash(name="calculator", description="Fun - Calculate.")
     async def slashcalculator(self, ctx: interactions.SlashContext):
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
         string = ""
 
+        actionrow1 = interactions.utils.manage_components.create_actionrow(
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "7", None, "7"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "8", None, "8"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "9", None, "9"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "+", None, "+"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Close", None, "exit")
+        )
+        actionrow2 = interactions.utils.manage_components.create_actionrow(
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "4", None, "4"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "5", None, "5"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "6", None, "6"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "-", None, "-"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "←", None, "back")
+        )
+        actionrow3 = interactions.utils.manage_components.create_actionrow(
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "1", None, "1"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "2", None, "2"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "3", None, "3"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "*", None, "*"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Clear", None, "clear")
+        )
+        actionrow4 = interactions.utils.manage_components.create_actionrow(
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "00", None, "00"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "0", None, "0"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, ".", None, "."),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "/", None, "/"),
+            interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.green, "=", None, "=")
+        )
+
+        components = [actionrow1, actionrow2, actionrow3, actionrow4]
+
         e = discord.Embed(title=f"{ctx.author.name}'s Calculator", color=int(self.embed["color"], 16), description="```\n \n```")
-        e.set_author(name=self.embed["authorname"], icon_url=self.embed["icon"])
-        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-        calculatormessage = await ctx.send(embed=e, components=[
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "7", None, "7"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "8", None, "8"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "9", None, "9"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "+", None, "+"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Close", None, "exit")
-            ),
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "4", None, "4"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "5", None, "5"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "6", None, "6"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "-", None, "-"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "←", None, "back")
-            ),
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "1", None, "1"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "2", None, "2"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "3", None, "3"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "*", None, "*"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Clear", None, "clear")
-            ),
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "00", None, "00"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "0", None, "0"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, ".", None, "."),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "/", None, "/"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.green, "=", None, "=")
-            )
-        ])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=self.embed["icon"])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=self.embed["icon"])
+        calculatormessage = await ctx.send(embed=e, components=components)
 
         async def check1(string):
             try:
@@ -429,44 +480,35 @@ class Fun(commands.Cog):
                 return False
         
         while 0 == 0:
-            waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, calculatormessage, ["00", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "=", "exit", "back", "clear"])
+            waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, calculatormessage, ["00", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "=", "exit", "back", "clear"])
             if waitfor.author.id == ctx.author.id:
                 try:
                     int(waitfor.custom_id)
                 except:
                     if waitfor.custom_id == "exit":
                         e.description = "```\nThis Calculator has been closed.\n```"
-                        await waitfor.edit_origin(embed=e)
-                        await calculatormessage.edit(components=[
-                            interactions.utils.manage_components.create_actionrow(
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "7", None, "7", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "8", None, "8", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "9", None, "9", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "+", None, "+", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Close", None, "exit", None, True)
-                            ),
-                            interactions.utils.manage_components.create_actionrow(
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "4", None, "4", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "5", None, "5", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "6", None, "6", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "-", None, "-", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "←", None, "back", None, True)
-                            ),
-                            interactions.utils.manage_components.create_actionrow(
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "1", None, "1", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "2", None, "2", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "3", None, "3", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "*", None, "*", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Clear", None, "clear", None, True)
-                            ),
-                            interactions.utils.manage_components.create_actionrow(
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "00", None, "00", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "0", None, "0", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, ".", None, ".", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "/", None, "/", None, True),
-                                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.green, "=", None, "=", None, True)
-                            )
-                            ])
+
+                        symbols = ["+", "-", "*", "/"]
+                        stuff = ["exit", "back", "clear"]
+                        for actionrow in components:
+                            for i in range(5):
+                                style = None
+                                try:
+                                    int(actionrow[i].custom_id)
+                                except:
+                                    if actionrow[i].custom_id in symbols:
+                                        style = interactions.utils.manage_components.ButtonStyle.blurple
+                                    elif actionrow[i].custom_id in stuff:
+                                        style = interactions.utils.manage_components.ButtonStyle.red
+                                    elif actionrow[i].custom_id == "=":
+                                        style = interactions.utils.manage_components.ButtonStyle.green
+                                    elif actionrow[i].custom_id == ".":
+                                        style = interactions.utils.manage_components.ButtonStyle.grey
+                                else:
+                                    style = interactions.utils.manage_components.ButtonStyle.grey
+                                actionrow[i] = interactions.utils.manage_components.create_button(style, actionrow[i].label, None, actionrow[i].custom_id, None, True)
+                        await waitfor.edit_origin(embed=e, components=components)
+
                         await waitfor.send("Calculator closed.", hidden=True)
                         break
                     elif waitfor.custom_id == "back":
@@ -552,7 +594,7 @@ class Fun(commands.Cog):
         
         e = discord.Embed(title=f"Hack {user.name}", color=int(bot[7], 16), description=f"**Hacking {user.name} ready.**")
         e.set_author(name=self.embed["author"], icon_url=bot[6])
-        e.set_footer(text=self.embed["footer"], icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         hackmessage = await hacking.reply(embed=e, components=[
             interactions.utils.manage_components.create_actionrow(
                 interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blue, "Hack Discord", None, custom_id="discord"),
@@ -561,7 +603,7 @@ class Fun(commands.Cog):
             )
         ])
 
-        waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, hackmessage, ["discord", "youtube", "twitter"])
+        waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, hackmessage, ["discord", "youtube", "twitter"])
         if waitfor.author_id == ctx.author.id:
             avatar = await user.avatar_url.read()
             webhook = await ctx.channel.create_webhook(name=user.name, avatar=avatar, reason="Hack command")
@@ -584,11 +626,105 @@ class Fun(commands.Cog):
 
         await self.hack(ctx, user)
     
-    @cog_ext.cog_slash(name="hack", description="Hack a Member (100% real)!", options=[
+    @cog_ext.cog_slash(name="hack", description="Fun - Hack a Member (100% real)!", options=[
         interactions.utils.manage_commands.create_option("user", "Who to hack.", 6, True)
     ])
     async def slashhack(self, ctx: interactions.SlashContext, user: discord.Member):
         await self.hack(ctx, user)
+    
+    @commands.command(name="game")
+    async def dpygame(self, ctx: commands.Context):
+        """Please use the Slash Command version, over at `/game <subcommand>`."""
+
+        await ctx.send("Please use the Slash Command version, over at `/game <subcommand>`.")
+    
+    @cog_ext.cog_subcommand(base="game", name="play", description="Fun - Play a Discord Game in a Voice Channel!", options=[
+        interactions.utils.manage_commands.create_option("channel", "The Voice Channel to play in.", 7, True),
+        interactions.utils.manage_commands.create_option("game", "The Discord Game to play.", 3, True, choices=[
+            interactions.utils.manage_commands.create_choice("755827207812677713", "Poker Night"),
+            interactions.utils.manage_commands.create_choice("832012774040141894", "Chess in the Park"),
+            interactions.utils.manage_commands.create_choice("755600276941176913", "YouTube Together"),
+            interactions.utils.manage_commands.create_choice("773336526917861400", "Betrayal.io"),
+            interactions.utils.manage_commands.create_choice("814288819477020702", "Fishington.io")
+        ])
+    ])
+    async def slashgameplay(self, ctx: interactions.SlashContext, channel: discord.VoiceChannel, game: str):
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
+        async with aiohttp.ClientSession(headers={"Authorization": f"Bot {bot[2]}"}) as session:
+            async with session.post(f"https://discord.com/api/v9/channels/{channel.id}/invites", data={"target_type": 2, "target_application_id": game}) as response:
+                invite = await response.json()
+                code = invite["code"]
+        
+        gamex = ""
+        if game == "755827207812677713":
+            gamex = "Poker Night"
+        elif game == "832012774040141894":
+            gamex = "Chess in the Park"
+        elif game == "755600276941176913":
+            gamex = "YouTube Together"
+        elif game == "773336526917861400":
+            gamex = "Betrayal.io"
+        elif game == "814288819477020702":
+            gamex = "Fishington.io"
+        
+        e = discord.Embed(title=f"Play {gamex}!", color=int(bot[7], 16), description=f"Click the Button below to play {gamex} in the {channel.name} Voice Channel!")
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
+        await ctx.send(embed=e, components=[
+            interactions.utils.manage_components.create_actionrow(
+                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, f"Play {gamex}!", None, None, f"https://discord.gg/{code}")
+            )
+        ])
+    
+    @cog_ext.cog_subcommand(base="game", name="info", description="Fun - Get info about Discord Games", options=[
+        interactions.utils.manage_commands.create_option("game", "The Discord Game to get information about.", 3, True, choices=[
+            interactions.utils.manage_commands.create_choice("Discord Games", "Discord Games (in general)"),
+            interactions.utils.manage_commands.create_choice("Poker Night", "Poker Night"),
+            interactions.utils.manage_commands.create_choice("Chess in the Park", "Chess in the Park"),
+            interactions.utils.manage_commands.create_choice("YouTube Together", "YouTube Together"),
+            interactions.utils.manage_commands.create_choice("Betrayal.io", "Betrayal.io"),
+            interactions.utils.manage_commands.create_choice("Fishington.io", "Fishington.io")
+        ])
+    ])
+    async def slashgameinfo(self, ctx: interactions.SlashContext, game: str):
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
+        if game != "Discord Games":
+            gameid = 0
+            if game == "Poker Night":
+                gameid = 755827207812677713
+            elif game == "Chess in the Park":
+                gameid = 832012774040141894
+            elif game == "YouTube Together":
+                gameid = 755600276941176913
+            elif game == "Betrayal.io":
+                gameid = 773336526917861400
+            elif game == "Fishington.io":
+                gameid = 814288819477020702
+        
+        gamedesc = ""
+        if game == "Discord Games":
+            gamedesc = "**Discord Games** are a **Beta** Discord feature, released **randomly** in some servers. There are six in total."
+        elif game == "Poker Night":
+            gamedesc = "Play poker with your friends in your favourite Discord server thanks to **Poker Night**. This was the first game released.\n**According to Discord themselves, *Poker Night* should only be played by people older than 18.**"
+        elif game == "Chess in the Park":
+            gamedesc = "Play a nice game of chess in a chill park with **Chess in the Park**. This game is the latest released."
+        elif game == "YouTube Together":
+            gamedesc = "Watch YouTube videos with all your friends thanks to **YouTube Together**!"
+        elif game == "Betrayal.io" or game == "Fishington.io":
+            gamedesc = "**Description coming soon(er or later).**"
+
+        e = discord.Embed(title=f"About {game}", color=int(bot[7], 16))
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
+        if game != "Discord Games":
+            e.add_field(name="Name", value=f"{game}")
+            e.add_field(name="ID", value=f"{gameid}")
+        e.add_field(name="Description", value=f"{gamedesc}")
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
+        await ctx.send(embed=e)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Fun(bot))

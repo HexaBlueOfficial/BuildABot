@@ -1,6 +1,8 @@
 import discord
 import json
+import discord_slash as interactions
 from discord.ext import commands
+from discord_slash import cog_ext
 
 class HelpCommand(commands.MinimalHelpCommand):
     def __init__(self):
@@ -20,7 +22,7 @@ class HelpCommand(commands.MinimalHelpCommand):
 
     async def send_bot_help(self, mapping):
         ctx = self.context
-        embed = discord.Embed(title="BuildABot's Commands", color=int(self.embed["color"], 16), description="The following is a list of commands for BuildABot.")
+        embed = discord.Embed(title="BuildABot's Commands", color=int(self.embed["color"], 16), description="The following is a list of Commands for BuildABot.")
         embed.set_author(name=self.embed["author"] + "Help", icon_url=self.embed["icon"])
         embed.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
         bot = self.context.bot
@@ -62,15 +64,45 @@ class HelpCommand(commands.MinimalHelpCommand):
         await self.context.send(embed=embed)
 
 class Help(commands.Cog):
-    """The cog for the bot's `help` command."""
+    """The Bot's `help` Command."""
     def __init__(self, bot):
         self.bot = bot
         self.old_help_command = bot.help_command
         bot.help_command = HelpCommand()
         bot.help_command.cog = self
+        with open("./BuildABot/BuildABot/misc/bab/assets/embed.json") as embedfile:
+            self.embed = json.load(embedfile)
 
     def cog_unload(self):
         self.bot.help_command = self.old_help_command
+    
+    @cog_ext.cog_slash(name="help", description="Help - Get help about all Commands.")
+    async def slashhelp(self, ctx: interactions.SlashContext):
+        botmanagerc = ""
+        corec = ""
+        helpc = ""
+
+        for key, value in self.bot.slash.commands:
+            description = value["description"].split(" - ")
+
+            if description[0] == "Bot Manager":
+                botmanagerc += f"`{key}` - `{description[1]}\n\n"
+            elif description[0] == "Core":
+                corec += f"`{key}` - `{description[1]}\n\n"
+            elif description[0] == "Help":
+                helpc += f"`{key}` - `{description[1]}\n\n"
+        
+        botmanagerc = botmanagerc.rstrip()
+        corec = corec.rstrip()
+        helpc += helpc.rstrip()
+
+        e = discord.Embed(title="BuildABot's Slash Commands", color=int(self.embed["color"], 16), description="The following is a list of Slash Commands for BuildABot.")
+        e.set_author(name=self.embed["author"], icon_url=self.embed["icon"])
+        e.add_field(name="Bot Manager", value=botmanagerc, inline=False)
+        e.add_field(name="Core", value=corec, inline=False)
+        e.add_field(name="Help", value=helpc, inline=False)
+        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
+        await ctx.send(embed=e)
 
 def setup(bot):
     bot.add_cog(Help(bot))

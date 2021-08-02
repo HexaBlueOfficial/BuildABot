@@ -1,6 +1,7 @@
 import discord
 import json
 import random
+import typing
 import platform
 import discord_slash as interactions
 from discord_slash import cog_ext
@@ -29,38 +30,8 @@ class Core(commands.Cog):
     @presence.before_loop
     async def before_presence(self):
         await self.bot.wait_until_ready()
-
-    @commands.command(name="info")
-    async def info(self, ctx: commands.Context):
-        """Shows information about BuildABot."""
-
-        luckyint = random.randint(1, 20)
-
-        e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
-        e.set_author(name="{}".format(self.embed["author"] + "Core"), icon_url=self.embed["icon"])
-        e.set_thumbnail(url=self.embed["icon"])
-        e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
-        e.add_field(name="Versions", value=f"BuildABot: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
-        e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
-        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-
-        components = [
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "Invite", None, "invite"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, "Support", None, None, "https://discord.gg/bacZt25ZGZ")
-            )
-        ]
-        info = await ctx.message.reply(embed=e, components=components)
-
-        if luckyint == 8:
-            await ctx.author.send("Hey!")
-            await ctx.author.send("You should try running `bab bab`!")
-
-        waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
-        await waitfor.send("**Coming soon...**", hidden=True)
     
-    @cog_ext.cog_slash(name="info", description="Core - Shows information about BuildABot.")
-    async def _info(self, ctx: interactions.SlashContext):
+    async def info(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
         luckyint = random.randint(1, 20)
 
         e = discord.Embed(title="About BuildABot", color=int(self.embed["color"], 16), description="**BuildABot** is a Bot... that makes Bots for who can't code!")
@@ -69,6 +40,7 @@ class Core(commands.Cog):
         e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.\nOther: `bab jishaku` (External Extension).", inline=False)
         e.add_field(name="Versions", value=f"BuildABot: v0.0.4\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Hosting:** [Library of Code](https://loc.sh/discord)", inline=False)
+        e.set_image(url=self.embed["banner"])
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
         components = [
@@ -77,7 +49,7 @@ class Core(commands.Cog):
                 interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, "Support", None, None, "https://discord.gg/bacZt25ZGZ")
             )
         ]
-        info = await ctx.message.reply(embed=e, components=components)
+        info = await ctx.send(embed=e, components=components)
 
         if luckyint == 8:
             await ctx.author.send("Hey!")
@@ -85,6 +57,16 @@ class Core(commands.Cog):
 
         waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
         await waitfor.send("**Coming soon...**", hidden=True)
+
+    @commands.command(name="info")
+    async def info(self, ctx: commands.Context):
+        """Shows information about BuildABot."""
+
+        await self.info(ctx)
+    
+    @cog_ext.cog_slash(name="info", description="Core - Shows information about BuildABot.")
+    async def _info(self, ctx: interactions.SlashContext):
+        await self.info(ctx)
     
     @commands.command(name="bab", hidden=True)
     async def bab(self, ctx: commands.Context):

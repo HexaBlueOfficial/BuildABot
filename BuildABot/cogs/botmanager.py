@@ -1,8 +1,9 @@
 import discord
 import json
 import asyncpg
-import aiohttp
 import discord_slash as interactions
+import aiohttp
+import typing
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -22,9 +23,12 @@ class BotManager(commands.Cog):
         with open("./BuildABot/BuildABot/misc/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
     
-    async def pgexecute(self, sql: str):
+    async def pgexecute(self, sql: str, stuff: str=None):
         db: asyncpg.Connection = await asyncpg.connect(self.postgres["buildabot"])
-        await db.execute(f'''{sql}''')
+        if stuff is None:
+            await db.execute(f'''{sql}''')
+        else:
+            await db.execute(f'''{sql}''', stuff)
 
     async def pgselect(self, query: str):
         db: asyncpg.Connection = await asyncpg.connect(self.postgres["buildabot"])
@@ -156,43 +160,34 @@ class BotManager(commands.Cog):
             e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
             await ctx.send(embed=e)
     
+    async def delete(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")
+        if q is not None:
+            async with aiohttp.ClientSession(headers={"Authorization": self.token["bab"]["builder"]}) as session:
+                async with session.post(f"https://discord.com/api/v9/applications/{q.splitlines()[1]}/delete"):
+                    await self.pgexecute(f"DELETE FROM bab WHERE bots = '{ctx.guild.id}\n%'")
+            
+            e = discord.Embed(title="Bot Deleted Successfully", color=int(self.embed["color"], 16), description="We're sorry to see you go!")
+        else:
+            e = discord.Embed(title="Wait...", color=int(self.embed["color"], 16), description="You don't even have a Bot!")
+
+        e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
+        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
+        await ctx.send(embed=e)
+    
     @commands.command(name="delete")
     @commands.has_permissions(manage_guild=True)
     async def delete(self, ctx: commands.Context):
         """Delete your Bot."""
 
-        q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")
-        if q is not None:
-            async with aiohttp.ClientSession(headers={"Authorization": self.token["bab"]["builder"]}) as session:
-                async with session.post(f"https://discord.com/api/v9/applications/{q.splitlines()[1]}/delete"):
-                    await self.pgexecute(f"DELETE FROM bab WHERE bots = '{ctx.guild.id}\n%'")
-            
-            e = discord.Embed(title="Bot Deleted Successfully", color=int(self.embed["color"], 16), description="We're sorry to see you go!")
-        else:
-            e = discord.Embed(title="Wait...", color=int(self.embed["color"], 16), description="You don't even have a Bot!")
-            
-        e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
-        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-        await ctx.send(embed=e)
+        await ctx.trigger_typing()
+        await self.delete(ctx)
     
     @cog_ext.cog_slash(name="delete", description="Bot Manager - Delete your Bot.")
     @commands.has_permissions(manage_guild=True)
     async def _delete(self, ctx: interactions.SlashContext):
         await ctx.defer()
-        
-        q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")
-        if q is not None:
-            async with aiohttp.ClientSession(headers={"Authorization": self.token["bab"]["builder"]}) as session:
-                async with session.post(f"https://discord.com/api/v9/applications/{q.splitlines()[1]}/delete"):
-                    await self.pgexecute(f"DELETE FROM bab WHERE bots = '{ctx.guild.id}\n%'")
-            
-            e = discord.Embed(title="Bot Deleted Successfully", color=int(self.embed["color"], 16), description="We're sorry to see you go!")
-        else:
-            e = discord.Embed(title="Wait...", color=int(self.embed["color"], 16), description="You don't even have a Bot!")
-
-        e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
-        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-        await ctx.send(embed=e)
+        await self.delete(ctx)
 
 def setup(bot: commands.Bot):
     bot.add_cog(BotManager(bot))

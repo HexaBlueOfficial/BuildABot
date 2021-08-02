@@ -4,6 +4,7 @@ import json
 import asyncpg
 import platform
 import discord_slash as interactions
+from datetime import datetime
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -20,6 +21,10 @@ class Core(commands.Cog):
     async def pgselect(self, query: str):
         db: asyncpg.Connection = asyncpg.connect(self.postgres["buildabot"])
         return await db.fetchrow(f'''{query}''')
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.bot.launch_time = datetime.utcnow()
     
     async def info(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -41,6 +46,7 @@ class Core(commands.Cog):
         e.add_field(name="BuildABot Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.", inline=False)
         e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.4\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Created with:** BuildABot", inline=False)
+        e.set_image(url=self.embed["banner"])
         e.set_footer(name=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e, components=[
             interactions.utils.manage_components.create_actionrow(
@@ -54,9 +60,55 @@ class Core(commands.Cog):
 
         await self.info(ctx)
     
-    @cog_ext.cog_slash(name="info", description="Core - Get info about the Bot.")
-    async def slashinfo(self, ctx: interactions.SlashContext):
+    @cog_ext.cog_subcommand(base="info", name="bot", description="Core - Get info about the Bot.")
+    async def slashinfobot(self, ctx: interactions.SlashContext):
         await self.info(ctx)
+    
+    async def ping(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
+        ping = round(self.bot.latency * 1000, 1)
+
+        e = discord.Embed(title="Ping Latency", color=int(bot[7], 16), description=f"My Ping Latency is {ping}.")
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
+        await ctx.send(embed=e)
+    
+    @commands.command(name="ping")
+    async def dpyping(self, ctx: commands.Context):
+        """Gets the Bot's Ping Latency."""
+
+        await self.ping(ctx)
+    
+    @cog_ext.cog_slash(name="ping", description="Core - Gets the Bot's Ping Latency.")
+    async def slashping(self, ctx: interactions.SlashContext):
+        await self.ping(ctx)
+    
+    async def uptime(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
+        delta_uptime = datetime.utcnow() - self.bot.launch_time
+        hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        
+        e = discord.Embed(title="Uptime", color=int(bot[7], 16), description=f"The bot has been online for:\n{days} days, {hours} hours, {minutes} minutes and {seconds} seconds.")
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
+        e.add_field(name="Last Restart", value="The bot was last restarted on {} UTC".format(self.bot.launch_time.strftime("%A, %d %B %Y at %H:%M")))
+        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
+        await ctx.send(embed=e)
+    
+    @commands.command(name="uptime")
+    async def dpyuptime(self, ctx: commands.Context):
+        """Shows the Bot's Uptime."""
+
+        await self.uptime(ctx)
+    
+    @cog_ext.cog_slash(name="uptime", description="Core - Shows the Bot's Uptime.")
+    async def slashuptime(self, ctx: interactions.SlashContext):
+        await self.uptime(ctx)
     
     @commands.command(name="bab", hidden=True)
     async def bab(self, ctx: commands.Context):

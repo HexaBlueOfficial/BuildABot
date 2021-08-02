@@ -84,7 +84,7 @@ class HelpCommand(commands.MinimalHelpCommand):
         await self.context.send(embed=embed)
 
 class Help(commands.Cog):
-    """The Bot's `help` command."""
+    """The Bot's `help` Command."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -103,15 +103,43 @@ class Help(commands.Cog):
     def cog_unload(self):
         self.bot.help_command = self.old_help_command
     
-    @cog_ext.cog_slash(name="help", description="Get help about all Commands.")
-    async def _help(self, ctx: interactions.SlashContext):
+    @cog_ext.cog_slash(name="help", description="Help - Get help about all Commands.")
+    async def slashhelp(self, ctx: interactions.SlashContext):
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
-        e = discord.Embed(title=f"{bot[5]}'s Slash Commands", color=int(bot[7], 16), description=f"This is a list of {bot[5]}'s Slash Commands.")
+        corec = ""
+        func = ""
+        helpc = ""
+        utilityc = ""
+
+        for key, value in self.bot.slash.commands:
+            description = value["description"].split(" - ")
+
+            if description[0] == "Core":
+                corec += f"`{key}` - `{description[1]}\n\n"
+            elif description[0] == "Fun":
+                func += f"`{key}` - `{description[1]}\n\n"
+            elif description[0] == "Help":
+                helpc += f"`{key}` - `{description[1]}\n\n"
+            elif description[0] == "Utility":
+                utilityc += f"`{key}` - `{description[1]}\n\n"
+        
+        corec = corec.rstrip()
+        func = func.rstrip()
+        helpc = helpc.rstrip()
+        utilityc = utilityc.rstrip()
+
+        cogs = bot[4].split(":")
+
+        e = discord.Embed(title=f"{bot[5]}'s Slash Commands", color=int(bot[7], 16), description=f"The following is a list of Slash Commands for {bot[5]}.")
         e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Help", icon_url=bot[6])
-        e.add_field(name="Core", value="`/info`\nGet info about the Bot.", inline=False)
-        e.add_field(name="Help", value="`/help`\nGet help about all Commands.")
+        e.add_field(name="Core", value=corec, inline=False)
+        e.add_field(name="Help", value=helpc, inline=False)
+        if "fun" in cogs:
+            e.add_field(name="Fun", value=func, inline=False)
+        if "utility" in cogs:
+            e.add_field(name="Utility", value=utilityc, inline=False)
         e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         await ctx.send(embed=e)
 
