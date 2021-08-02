@@ -38,7 +38,7 @@ async def on_slash_command_error(ctx: interactions.SlashContext, ex):
 
     raise ex
 
-extensions = ["cogs.botmanager", "cogs.core", "cogs.help", "jishaku"]
+extensions = ["cogs.botmanager", "cogs.core", "cogs.help", "cogs.utility", "jishaku"]
 for extension in extensions:
     bot.load_extension(extension)
 
