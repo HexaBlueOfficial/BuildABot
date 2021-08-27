@@ -5,6 +5,7 @@ import asyncpg
 import platform
 import discord_slash as interactions
 from datetime import datetime
+from ..misc.bab.extracode import bancheck
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -25,8 +26,25 @@ class Core(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.launch_time = datetime.utcnow()
+
+        q1: str = await self.pgselect(f"SELECT plus FROM bab WHERE bots = '{self.bot.user.id}\n%'")
+        q2: str = await self.pgselect(f"SELECT pro FROM bab WHERE bots = '{self.bot.user.id}\n%'")
+
+        bool1 = bool(q1.splitlines()[1])
+        bool2 = bool(q2.splitlines()[1])
+
+        if bool1 or bool2:
+            q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+            bot = q.splitlines()
+            await self.bot.change_presence(activity=discord.Activity(name=f"{bot[0]}", type=discord.ActivityType.watching))
+        else:
+            await self.bot.change_presence(activity=discord.Activity(name="https://hexacode.ml", type=discord.ActivityType.watching))
     
     async def info(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -44,7 +62,7 @@ class Core(commands.Cog):
         e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Core", icon_url=bot[6])
         e.set_thumbnail(url=bot[6])
         e.add_field(name="BuildABot Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `bab help`.", inline=False)
-        e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.6\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="BuildABot Versions", value=f"BuildABot: v0.0.7\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.add_field(name="Credits", value="**Created with:** BuildABot", inline=False)
         e.set_image(url=self.embed["banner"])
         e.set_footer(name=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
@@ -65,6 +83,10 @@ class Core(commands.Cog):
         await self.info(ctx)
     
     async def ping(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -86,6 +108,10 @@ class Core(commands.Cog):
         await self.ping(ctx)
     
     async def uptime(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -110,9 +136,41 @@ class Core(commands.Cog):
     async def slashuptime(self, ctx: interactions.SlashContext):
         await self.uptime(ctx)
     
+    async def reload(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
+        q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
+        bot = q.splitlines()
+
+        await ctx.send("**Reloading the Cogs!**")
+
+        cogs = bot[4].split(":")
+        cogs.pop(0)
+        cogs.append("core")
+        for cog in cogs:
+            self.bot.reload_extension(f".{cog}")
+
+    @commands.command(name="reload")
+    @commands.has_permissions(manage_guild=True)
+    async def dpyreload(self, ctx: commands.Context):
+        """Reload the Bot's Cogs."""
+
+        await self.reload(ctx)
+    
+    @cog_ext.cog_slash(name="reload", description="Core - Reload the Bot's Cogs.")
+    @commands.has_permissions(manage_guild=True)
+    async def slashreload(self, ctx: interactions.SlashContext):
+        await self.reload(ctx)
+
     @commands.command(name="bab", hidden=True)
     async def bab(self, ctx: commands.Context):
         """???"""
+
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
 
         await ctx.send("**Flamey** (developer of **BuildABot**) always puts a prefix-based Easter Egg in his bots. But this time... he didn't know what to do, because he can't predict prefixes!\nSo he did this. Nice find.")
 

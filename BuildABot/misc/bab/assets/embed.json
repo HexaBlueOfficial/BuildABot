@@ -1,7 +1,11 @@
 {
-    "color": "fffffe",
+    "color": "ffffff",
+    "yescolor": "69e781",
+    "nocolor": "fb5252",
     "author": "BuildABot - ",
-    "icon": "https://this.is-for.me/i/wwio.jpg",
+    "icon": "https://this.is-for.me/i/znp4.png",
+    "yesicon": "https://wildcard.is-for.me/i/t60a.png",
+    "noicon": "https://wildcard.is-for.me/i/eqh5.png",
     "banner": "https://this.is-for.me/i/1xe5.jpg",
-    "footer": "BuildABot by Earth Development"
+    "footer": "BuildABot by HexaCode"
 }

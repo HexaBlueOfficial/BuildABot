@@ -11,6 +11,7 @@ import discord_slash as interactions
 import sussy
 import random
 import asyncpg
+from datetime import datetime
 from discord.ext import commands
 
 with open("./postgres.json") as postgresfile:
@@ -66,9 +67,8 @@ async def database(ctx: typing.Union[commands.Context, interactions.SlashContext
             await db.execute(f'''{sql}''', stuff)
     
     code = code.split("@")
-    codex = code[0].split("*")
 
     if code[1] == "updates":
         await execute("INSERT INTO bab(updates) VALUES ($1)", ctx.author)
     elif code[1] == "plus":
-        await execute("INSERT INTO bab(plus) VALUES ($1)", bot.user.id)
+        await execute("INSERT INTO bab(plus) VALUES ($1)", f"{bot.user.id}\nT\n{datetime.utcnow()}")

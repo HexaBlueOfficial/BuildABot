@@ -6,7 +6,8 @@ import aiohttp
 import discord_slash as interactions
 import random
 import asyncio
-from ..misc.bots.extracode import supermarket
+from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import supermarket
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -43,6 +44,10 @@ class Fun(commands.Cog):
         return f"{uwu}, uwu *rawr* XD!"
     
     async def cat(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -64,11 +69,15 @@ class Fun(commands.Cog):
         await ctx.trigger_typing()
         await self.cat(ctx)
     
-    @cog_ext.cog_slash(name="cat", description="Fun - Shows a random image of a cat.")
+    @cog_ext.cog_subcommand(base="animals", name="cat", description="Fun - Shows a random image of a cat.")
     async def slashcat(self, ctx: interactions.SlashContext):
         await self.cat(ctx)
     
     async def dog(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -90,11 +99,15 @@ class Fun(commands.Cog):
         await ctx.trigger_typing()
         await self.dog(ctx)
     
-    @cog_ext.cog_slash(name="dog", description="Fun - Shows a random image of a dog.")
+    @cog_ext.cog_subcommand(base="animals", name="dog", description="Fun - Shows a random image of a dog.")
     async def slashdog(self, ctx: interactions.SlashContext):
         await self.dog(ctx)
     
     async def fox(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -116,13 +129,17 @@ class Fun(commands.Cog):
         await ctx.trigger_typing()
         await self.fox(ctx)
     
-    @cog_ext.cog_slash(name="fox", description="Fun - Shows a random image of a fox.")
+    @cog_ext.cog_subcommand(base="animals", name="fox", description="Fun - Shows a random image of a fox.")
     async def slashfox(self, ctx: interactions.SlashContext):
         await self.fox(ctx)
     
     @commands.command(name="say")
     async def dpysay(self, ctx: commands.Context):
         """Please use the Slash Command version, over at `/say`."""
+
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
 
         await ctx.send("Please use the Slash Command version, over at `/say`.")
     
@@ -133,6 +150,10 @@ class Fun(commands.Cog):
         interactions.utils.manage_commands.create_option("user", "The User you want to \"impersonate\".", 6, False)
     ])
     async def slashsay(self, ctx: interactions.SlashContext, message: str, anonymous: bool=False, uwu: bool=False, user: discord.Member=None):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         if anonymous:
             avatar = await self.bot.user.avatar.read()
             webhook = await ctx.channel.create_webhook(name="Anonymous", avatar=avatar, reason="Say command.")
@@ -154,6 +175,10 @@ class Fun(commands.Cog):
         await webhook.delete()
 
     async def eightball(self, ctx: typing.Union[commands.Context, interactions.SlashContext], question: str):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -180,6 +205,10 @@ class Fun(commands.Cog):
         await self.eightball(ctx, question)
     
     async def gaypercent(self, ctx: typing.Union[commands.Context, interactions.SlashContext], thing: str=None):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -249,6 +278,10 @@ class Fun(commands.Cog):
         await self.gaypercent(ctx, thing)
     
     async def hug(self, ctx: typing.Union[commands.Context, interactions.SlashContext], member: discord.Member, message: str=None):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -278,6 +311,10 @@ class Fun(commands.Cog):
         await self.hug(ctx, member, message)
     
     async def kill(self, ctx: typing.Union[commands.Context, interactions.SlashContext], member: discord.Member):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -303,6 +340,10 @@ class Fun(commands.Cog):
         await self.kill(ctx, member)
     
     async def supermarket(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -357,6 +398,10 @@ class Fun(commands.Cog):
         interactions.utils.manage_commands.create_option("option2", "The second option to vote on.", 3, True)
     ])
     async def slashpoll(self, ctx: interactions.SlashContext, name: str, option1: str, option2: str):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -364,7 +409,7 @@ class Fun(commands.Cog):
         vote2 = 0
         
         e = discord.Embed(title=f"Poll: {name}", color=int(bot[7], 16), description=f"**Poll by {ctx.author.mention}.**\nThink and choose.")
-        e.set_author(name=self.embed["author"], icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         e.add_field(name=option1, value=f"{vote1} | 0%")
         e.add_field(name=option2, value=f"{vote2} | 0%")
         e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
@@ -396,10 +441,18 @@ class Fun(commands.Cog):
     async def dpycalculator(self, ctx: commands.Context):
         """Please use the Slash Command version, over at `/calculator`."""
 
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         await ctx.send("Please use the Slash Command version, over at `/calculator`.")
     
     @cog_ext.cog_slash(name="calculator", description="Fun - Calculate.")
     async def slashcalculator(self, ctx: interactions.SlashContext):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -585,6 +638,10 @@ class Fun(commands.Cog):
                     await waitfor.edit_origin(embed=e)
     
     async def hack(self, ctx: typing.Union[commands.Context, interactions.SlashContext], user: discord.Member):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -593,7 +650,7 @@ class Fun(commands.Cog):
         await hacking.edit(content="<:Yes:833293078197829642> **Logins deciphered. Select what to hack below.**")
         
         e = discord.Embed(title=f"Hack {user.name}", color=int(bot[7], 16), description=f"**Hacking {user.name} ready.**")
-        e.set_author(name=self.embed["author"], icon_url=bot[6])
+        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
         e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
         hackmessage = await hacking.reply(embed=e, components=[
             interactions.utils.manage_components.create_actionrow(
@@ -634,12 +691,15 @@ class Fun(commands.Cog):
     
     @commands.command(name="game")
     async def dpygame(self, ctx: commands.Context):
-        """Please use the Slash Command version, over at `/game <subcommand>`."""
+        """Please use the Slash Command version, over at `/discord game <subcommand>`."""
 
-        await ctx.send("Please use the Slash Command version, over at `/game <subcommand>`.")
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
+        await ctx.send("Please use the Slash Command version, over at `/discord game <subcommand>`.")
     
-    @cog_ext.cog_subcommand(base="game", name="play", description="Fun - Play a Discord Game in a Voice Channel!", options=[
-        interactions.utils.manage_commands.create_option("channel", "The Voice Channel to play in.", 7, True),
+    @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="play", description="Fun - Play a Discord Game in a Voice Channel!", options=[
         interactions.utils.manage_commands.create_option("game", "The Discord Game to play.", 3, True, choices=[
             interactions.utils.manage_commands.create_choice("755827207812677713", "Poker Night"),
             interactions.utils.manage_commands.create_choice("832012774040141894", "Chess in the Park"),
@@ -648,37 +708,46 @@ class Fun(commands.Cog):
             interactions.utils.manage_commands.create_choice("814288819477020702", "Fishington.io")
         ])
     ])
-    async def slashgameplay(self, ctx: interactions.SlashContext, channel: discord.VoiceChannel, game: str):
+    async def slashgameplay(self, ctx: interactions.SlashContext, game: str):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
-        async with aiohttp.ClientSession(headers={"Authorization": f"Bot {bot[2]}"}) as session:
-            async with session.post(f"https://discord.com/api/v9/channels/{channel.id}/invites", data={"target_type": 2, "target_application_id": game}) as response:
-                invite = await response.json()
-                code = invite["code"]
+        async def playgame(channel: discord.VoiceChannel):
+            invite = await channel.create_invite(target_type=discord.InviteTarget.embedded_application, target_application_id=int(game), reason="Play Discord Game Command.")
+
+            gamex = ""
+            if game == "755827207812677713":
+                gamex = "Poker Night"
+            elif game == "832012774040141894":
+                gamex = "Chess in the Park"
+            elif game == "755600276941176913":
+                gamex = "YouTube Together"
+            elif game == "773336526917861400":
+                gamex = "Betrayal.io"
+            elif game == "814288819477020702":
+                gamex = "Fishington.io"
         
-        gamex = ""
-        if game == "755827207812677713":
-            gamex = "Poker Night"
-        elif game == "832012774040141894":
-            gamex = "Chess in the Park"
-        elif game == "755600276941176913":
-            gamex = "YouTube Together"
-        elif game == "773336526917861400":
-            gamex = "Betrayal.io"
-        elif game == "814288819477020702":
-            gamex = "Fishington.io"
+            e = discord.Embed(title=f"Play {gamex}!", color=int(bot[7], 16), description=f"Click the Button below to play {gamex} in the {channel.name} Voice Channel!")
+            e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
+            e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
+            await ctx.send(embed=e, components=[
+                interactions.utils.manage_components.create_actionrow(
+                    interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, f"Play {gamex}!", None, None, invite.url)
+                )
+            ])
         
-        e = discord.Embed(title=f"Play {gamex}!", color=int(bot[7], 16), description=f"Click the Button below to play {gamex} in the {channel.name} Voice Channel!")
-        e.set_author(name=self.embed["author"].replace("name", bot[5]) + "Fun", icon_url=bot[6])
-        e.set_footer(text=self.embed["footer"].replace("name", bot[5]), icon_url=bot[6])
-        await ctx.send(embed=e, components=[
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, f"Play {gamex}!", None, None, f"https://discord.gg/{code}")
-            )
-        ])
+        voicestatus = ctx.author.voice
+
+        if voicestatus is None:
+            await ctx.send("Please join a Voice Channel and run the command again.", hidden=True)
+        else:
+            await playgame(voicestatus.channel)
     
-    @cog_ext.cog_subcommand(base="game", name="info", description="Fun - Get info about Discord Games", options=[
+    @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="info", description="Fun - Get info about Discord Games", options=[
         interactions.utils.manage_commands.create_option("game", "The Discord Game to get information about.", 3, True, choices=[
             interactions.utils.manage_commands.create_choice("Discord Games", "Discord Games (in general)"),
             interactions.utils.manage_commands.create_choice("Poker Night", "Poker Night"),
@@ -689,6 +758,10 @@ class Fun(commands.Cog):
         ])
     ])
     async def slashgameinfo(self, ctx: interactions.SlashContext, game: str):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 

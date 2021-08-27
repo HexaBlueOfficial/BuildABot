@@ -3,6 +3,7 @@ import json
 import asyncpg
 import typing
 import discord_slash as interactions
+from ..misc.bab.extracode import bancheck
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -21,6 +22,10 @@ class Utility(commands.Cog):
         return await db.fetchrow(f'''{query}''')
     
     async def userinfo(self, ctx: typing.Union[commands.Context, interactions.SlashContext], user: str=None):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
@@ -138,6 +143,10 @@ class Utility(commands.Cog):
         await self.userinfo(ctx, user)
     
     async def serverinfo(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
+        if bancheck.check(ctx):
+            await bancheck.banned(ctx)
+            return
+
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
         bot = q.splitlines()
 
