@@ -1,7 +1,7 @@
 import discord
 import json
 import dinteractions_Paginator as paginator
-from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import bans
 from discord.ext import commands
 
 class HelpCommand(commands.MinimalHelpCommand):
@@ -23,8 +23,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_bot_help(self, mapping):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         embed = discord.Embed(title="BuildABot's Commands", color=int(self.embed["color"], 16), description="The following is a list of Commands for BuildABot.")
@@ -48,8 +48,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_command_help(self, command):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         embed = discord.Embed(title=f"{self.get_command_signature(command)} (from {command.cog_name})", description=command.help or 'No description', color=int(self.embed["color"], 16))
@@ -62,8 +62,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_group_help(self, group):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         embed = discord.Embed(color=int(self.embed["color"], 16))
@@ -77,8 +77,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_cog_help(self, cog):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         embed = discord.Embed(title=f"{cog.qualified_name}", description=cog.description or 'No description', color=int(self.embed["color"], 16))

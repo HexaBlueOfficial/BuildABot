@@ -3,7 +3,7 @@ import json
 import typing
 import discord_slash as interactions
 from datetime import datetime
-from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import bans
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -20,8 +20,8 @@ class Utility(commands.Cog):
         self.bot.launch_time = datetime.utcnow()
 
     async def ping(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         ping = round(self.bot.latency * 1000, 1)
@@ -42,8 +42,8 @@ class Utility(commands.Cog):
         await self.ping(ctx)
     
     async def uptime(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         delta_uptime = datetime.utcnow() - self.bot.launch_time

@@ -4,7 +4,7 @@ import asyncpg
 import discord_slash as interactions
 import aiohttp
 import typing
-from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import bans
 from discord_slash import cog_ext
 from discord.ext import commands
 
@@ -23,7 +23,7 @@ class BotManager(commands.Cog):
             self.postgres = json.load(postgresfile)
         with open("./BuildABot/BuildABot/misc/bab/assets/embed.json") as embedfile:
             self.embed = json.load(embedfile)
-    
+
     async def pgexecute(self, sql: str, stuff: str=None):
         db: asyncpg.Connection = await asyncpg.connect(self.postgres["buildabot"])
         if stuff is None:
@@ -34,17 +34,17 @@ class BotManager(commands.Cog):
     async def pgselect(self, query: str):
         db: asyncpg.Connection = await asyncpg.connect(self.postgres["buildabot"])
         return await db.fetchrow(f'''{query}''')
-    
+
     @commands.command(name="create")
     async def dpycreate(self, ctx: commands.Context):
         """Please use the Slash Command version, over at `/create`."""
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         await ctx.send("Please use the Slash Command version, over at `/create`.")
-    
+
     @cog_ext.cog_slash(name="create", description="Bot Manager - Create a Bot!", options=[
         interactions.utils.manage_commands.create_option("name", "The Bot's name.", 3, True),
         interactions.utils.manage_commands.create_option("prefix", "The Bot's prefix (symbol to which the bot will respond to).", 3, True),
@@ -59,12 +59,12 @@ class BotManager(commands.Cog):
             interactions.utils.manage_commands.create_choice("https://this.is-for.me/i/605t.jpg", "Sky")
         ])
     ])
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(administrator=True)
     async def slashcreate(self, ctx: interactions.SlashContext, name: str, prefix: str, features: str, avatar: str):
         await ctx.defer()
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")
@@ -73,10 +73,10 @@ class BotManager(commands.Cog):
             botobj.remove_command("help")
 
             async with aiohttp.ClientSession(headers={"Authorization": self.token["bab"]["builder"]}) as session1:
-                async with session1.post("https://discord.com/api/v9/applications", data={"name": name, "team_id": "868533132880658483"}) as application:
+                async with session1.post("https://discord.com/api/v9/applications", json={"name": name, "team_id": "868533132880658483"}) as application:
                     response1 = await application.json()
                     appid = response1["id"]
-                    await session1.patch(f"https://discord.com/api/v9/applications/{appid}", data={"description": f"{name} is a **Bot** created with **BuildABot**!\nCheck **BuildABot** out at https://buildabot.tk/"})
+                    await session1.patch(f"https://discord.com/api/v9/applications/{appid}", json={"description": f"{name} is a **Bot** created with **BuildABot**!\nCheck **BuildABot** out at https://buildabot.tk/"})
                 async with session1.post(f"https://discord.com/api/v9/applications/{appid}/bot") as bot:
                     response2 = await bot.json()
                     token = response2["token"]
@@ -85,19 +85,20 @@ class BotManager(commands.Cog):
                         await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\n{features}\n{name}\n{avatar}\nffffff")
                     elif avatar == "https://this.is-for.me/i/605t.jpg":
                         await self.pgexecute("INSERT INTO bab(bots) VALUES ($1)", f"{ctx.guild.id}\n{appid}\n{token}\n{prefix}\n{features}\n{name}\n{avatar}\n00a8ff")
-            
-            async with aiohttp.ClientSession(headers={"Authorization": f"{token}"}) as session2:
-                await session2.patch("https://discord.com/api/v9/users/@me", data={"avatar": avatar})
-            
+
+            async with aiohttp.ClientSession(headers={"Authorization": f"Bot {token}"}) as session2:
+                await session2.patch("https://discord.com/api/v9/users/@me", json={"avatar": avatar})
+
             botobj = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), intents=discord.Intents.all())
+            slashobj = interactions.SlashCommand(botobj, sync_commands=True, sync_on_cog_reload=True)
             botobj.remove_command("help")
 
             cogs = features.split(":")
             for cog in cogs:
                 botobj.load_extension(f"..features.{cog}")
-            
+
             await botobj.login(token)
-        
+
             e = discord.Embed(title="Bot Created Successfully", color=int(self.embed["color"], 16), description="Click the link below to add your Bot!")
             e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
             e.add_field(name="Invite", value=f"Click [here](https://discord.com/api/oauth2/authorize?client_id={appid}&permissions=8&scope=bot%20applications.commands) to invite your Bot!")
@@ -111,8 +112,8 @@ class BotManager(commands.Cog):
 
             waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, create, "botinfo1")
 
-            user = await self.bot.fetch_user(appid)
-            
+            user = await self.bot.fetch_user(int(appid))
+
             e = discord.Embed(title=f"Information about {str(user)}", color=int(self.embed["color"], 16))
             e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
             e.set_thumbnail(url=user.avatar.url)
@@ -132,14 +133,14 @@ class BotManager(commands.Cog):
     
     @commands.command(name="edit")
     async def dpyedit(self, ctx: commands.Context):
-
         """Please use the Slash Command version, over at `/edit`."""
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         await ctx.send("Please use the Slash Command version, over at `/edit`.")
-    
+
     @cog_ext.cog_slash(name="edit", description="Bot Manager - Change your Bot's name or avatar!", options=[
         interactions.utils.manage_commands.create_option("name", "The Bot's new name.", 3, False),
         interactions.utils.manage_commands.create_option("features", "The plugins/Cogs for the Bot.", 3, False, choices=[
@@ -157,8 +158,8 @@ class BotManager(commands.Cog):
     async def slashedit(self, ctx: interactions.SlashContext, name: str=None, features: str=None, avatar: str=None):
         await ctx.defer()
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         if name is None and features is None and avatar is None:
@@ -179,7 +180,7 @@ class BotManager(commands.Cog):
 
             if name[1] or avatar[1]:
                 async with aiohttp.ClientSession(headers={"Authorization": f"Bot {bot[2]}"}) as session:
-                    async with session.patch("https://discord.com/api/v9/users/@me", data={"username": name, "avatar": avatar}) as response:
+                    async with session.patch("https://discord.com/api/v9/users/@me", json={"username": name, "avatar": avatar}) as response:
                         response = await response.json()
             
             if features is not None:
@@ -198,7 +199,7 @@ class BotManager(commands.Cog):
 
             waitfor = await interactions.utils.manage_components.wait_for_component(self.bot, edit, "botinfo2")
 
-            user = await self.bot.fetch_user(response["id"])
+            user = await self.bot.fetch_user(int(response["id"]))
             
             e = discord.Embed(title=f"Information about {str(user)}", color=int(self.embed["color"], 16))
             e.set_author(name=self.embed["author"] + "Bot Manager", icon_url=self.embed["icon"])
@@ -216,8 +217,8 @@ class BotManager(commands.Cog):
             await ctx.send(embed=e)
     
     async def delete(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '{ctx.guild.id}\n%'")

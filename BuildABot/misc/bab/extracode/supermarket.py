@@ -56,19 +56,3 @@ async def run(ctx: typing.Union[commands.Context, interactions.SlashContext], bo
     command: commands.Command = bot.get_command(command)
     await command.__call__(ctx.author)
 
-async def database(ctx: typing.Union[commands.Context, interactions.SlashContext], bot: commands.Bot, code: str):
-    """Executes a Supermarket Code of `DB` type."""
-
-    async def execute(sql: str, stuff: str=None):
-        db: asyncpg.Connection = await asyncpg.connect(postgres["buildabot"])
-        if stuff is None:
-            await db.execute(f'''{sql}''')
-        else:
-            await db.execute(f'''{sql}''', stuff)
-    
-    code = code.split("@")
-
-    if code[1] == "updates":
-        await execute("INSERT INTO bab(updates) VALUES ($1)", ctx.author)
-    elif code[1] == "plus":
-        await execute("INSERT INTO bab(plus) VALUES ($1)", f"{bot.user.id}\nT\n{datetime.utcnow()}")

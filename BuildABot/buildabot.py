@@ -17,7 +17,7 @@ with open("./BuildABot/BuildABot/assets/embed.json") as embedfile:
 
 @bot.event
 async def on_ready():
-    channel: discord.TextChannel = bot.get_channel(863150083913416748)
+    channel: discord.TextChannel = bot.get_channel(832677639944667186)
     await channel.send(f"BuildABot is ready and running on discord.py v{discord.__version__}!")
 
 @bot.event
@@ -38,7 +38,7 @@ async def on_slash_command_error(ctx: interactions.SlashContext, ex):
 
     raise ex
 
-extensions = ["cogs.botmanager", "cogs.core", "cogs.help", "cogs.utility", "jishaku"]
+extensions = ["cogs.botmanager", "cogs.core", "cogs.developer", "cogs.help", "cogs.utility", "jishaku"]
 for extension in extensions:
     bot.load_extension(extension)
 

@@ -3,7 +3,7 @@ import json
 import asyncpg
 import typing
 import discord_slash as interactions
-from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import bans
 from discord_slash import cog_ext
 from discord.ext import commands
 

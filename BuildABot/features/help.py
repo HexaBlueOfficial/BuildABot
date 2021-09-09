@@ -2,7 +2,7 @@ import discord
 import json
 import asyncpg
 import dinteractions_Paginator as paginator
-from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import bans
 from discord.ext import commands
 
 class HelpCommand(commands.MinimalHelpCommand):
@@ -30,8 +30,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_bot_help(self, mapping):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -58,8 +58,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_command_help(self, command):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -75,8 +75,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_group_help(self, group):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -93,8 +93,8 @@ class HelpCommand(commands.MinimalHelpCommand):
     async def send_cog_help(self, cog):
         ctx = self.context
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")

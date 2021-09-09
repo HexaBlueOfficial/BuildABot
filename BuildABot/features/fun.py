@@ -6,7 +6,7 @@ import aiohttp
 import discord_slash as interactions
 import random
 import asyncio
-from ..misc.bab.extracode import bancheck
+from ..misc.bab.extracode import bans
 from ..misc.bab.extracode import supermarket
 from discord_slash import cog_ext
 from discord.ext import commands
@@ -44,8 +44,8 @@ class Fun(commands.Cog):
         return f"{uwu}, uwu *rawr* XD!"
     
     async def cat(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -74,8 +74,8 @@ class Fun(commands.Cog):
         await self.cat(ctx)
     
     async def dog(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -104,8 +104,8 @@ class Fun(commands.Cog):
         await self.dog(ctx)
     
     async def fox(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -137,8 +137,8 @@ class Fun(commands.Cog):
     async def dpysay(self, ctx: commands.Context):
         """Please use the Slash Command version, over at `/say`."""
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         await ctx.send("Please use the Slash Command version, over at `/say`.")
@@ -150,8 +150,8 @@ class Fun(commands.Cog):
         interactions.utils.manage_commands.create_option("user", "The User you want to \"impersonate\".", 6, False)
     ])
     async def slashsay(self, ctx: interactions.SlashContext, message: str, anonymous: bool=False, uwu: bool=False, user: discord.Member=None):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         if anonymous:
@@ -175,8 +175,8 @@ class Fun(commands.Cog):
         await webhook.delete()
 
     async def eightball(self, ctx: typing.Union[commands.Context, interactions.SlashContext], question: str):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -205,8 +205,8 @@ class Fun(commands.Cog):
         await self.eightball(ctx, question)
     
     async def gaypercent(self, ctx: typing.Union[commands.Context, interactions.SlashContext], thing: str=None):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -278,8 +278,8 @@ class Fun(commands.Cog):
         await self.gaypercent(ctx, thing)
     
     async def hug(self, ctx: typing.Union[commands.Context, interactions.SlashContext], member: discord.Member, message: str=None):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -311,8 +311,8 @@ class Fun(commands.Cog):
         await self.hug(ctx, member, message)
     
     async def kill(self, ctx: typing.Union[commands.Context, interactions.SlashContext], member: discord.Member):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -340,8 +340,8 @@ class Fun(commands.Cog):
         await self.kill(ctx, member)
     
     async def supermarket(self, ctx: typing.Union[commands.Context, interactions.SlashContext]):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -398,8 +398,8 @@ class Fun(commands.Cog):
         interactions.utils.manage_commands.create_option("option2", "The second option to vote on.", 3, True)
     ])
     async def slashpoll(self, ctx: interactions.SlashContext, name: str, option1: str, option2: str):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -441,16 +441,16 @@ class Fun(commands.Cog):
     async def dpycalculator(self, ctx: commands.Context):
         """Please use the Slash Command version, over at `/calculator`."""
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         await ctx.send("Please use the Slash Command version, over at `/calculator`.")
     
     @cog_ext.cog_slash(name="calculator", description="Fun - Calculate.")
     async def slashcalculator(self, ctx: interactions.SlashContext):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -638,8 +638,8 @@ class Fun(commands.Cog):
                     await waitfor.edit_origin(embed=e)
     
     async def hack(self, ctx: typing.Union[commands.Context, interactions.SlashContext], user: discord.Member):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -693,8 +693,8 @@ class Fun(commands.Cog):
     async def dpygame(self, ctx: commands.Context):
         """Please use the Slash Command version, over at `/discord game <subcommand>`."""
 
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         await ctx.send("Please use the Slash Command version, over at `/discord game <subcommand>`.")
@@ -709,8 +709,8 @@ class Fun(commands.Cog):
         ])
     ])
     async def slashgameplay(self, ctx: interactions.SlashContext, game: str):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
@@ -758,8 +758,8 @@ class Fun(commands.Cog):
         ])
     ])
     async def slashgameinfo(self, ctx: interactions.SlashContext, game: str):
-        if bancheck.check(ctx):
-            await bancheck.banned(ctx)
+        if bans.check(ctx):
+            await bans.banned(ctx)
             return
 
         q: str = await self.pgselect(f"SELECT bots FROM bab WHERE bots = '%\n{self.bot.user.id}\n%'")
